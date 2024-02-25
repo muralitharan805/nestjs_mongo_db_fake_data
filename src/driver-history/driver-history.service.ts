@@ -17,31 +17,31 @@ export class DriverHistoryService {
     const driverHistories = [];
     for (let index = 0; index < 100000; index++) {
       const driverHistory = new CreateDriverHistoryDto()
-      driverHistories.push(driverHistory);
+      driverHistories.push({ insertOne: { document: { driverHistory } } });
     }
     try {
-      this.driverHistoryCollection.insertMany(driverHistories);
+      this.driverHistoryCollection.bulkWrite(driverHistories)
     } catch (error) {
       clearInterval(this.intervelId)
     }
+
+    driverHistoryCollection
     const end_date: any = new Date()
     const total_time_take = end_date - start_date
     console.log((total_time_take / 1000) + ' Bulk insert completed.');
   }
   constructor(@InjectModel(driverHistoryCollection.name) private driverHistoryCollection: Model<driverHistoryCollection>) { }
-  async create() {
+  create() {
+    // setTimeout(() => {
+    //   this.intervelId = setInterval(this.bulkInsert.bind(this), 30000)
+    // }, 0);
+    const driverHistories = [];
+    for (let index = 0; index < 100000; index++) {
+      const driverHistory = new CreateDriverHistoryDto()
+      driverHistories.push({ insertOne: { document: driverHistory } });
+    }
+    this.driverHistoryCollection.bulkWrite(driverHistories)
 
-    setTimeout(() => {
-      this.intervelId = setInterval(this.bulkInsert.bind(this), 30000)
-    }, 0);
-    // console.log('Bulk insert started...');
-    // const driverHistories = [];
-    // for (let index = 0; index < 100000; index++) {
-    //   const driverHistory = new CreateDriverHistoryDto()
-    //   driverHistories.push(driverHistory);
-    // }
-    // await this.driverHistoryCollection.insertMany(driverHistories);
-    // console.log('Bulk insert completed.');
   }
 
   async findAll(): Promise<driverHistoryCollection[]> {
